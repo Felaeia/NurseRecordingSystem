@@ -3,13 +3,13 @@ using Microsoft.Extensions.Configuration;
 using NurseRecordingSystem.Model.DatabaseModels;
 using NurseRecordingSystem.Model.DTO;
 
-namespace NurseRecordingSystem.Class.UserServices
+namespace NurseRecordingSystem.Class.Authentication
 {
-    public class UserAuthentication
+    public class UserAuthenticationService
     {
         private readonly string? _connectionString;
 
-        public UserAuthentication(IConfiguration configuration)
+        public UserAuthenticationService(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");

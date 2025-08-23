@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NurseRecordingSystem.Class.UserServices;
+using NurseRecordingSystem.Class.Authentication;
 using NurseRecordingSystem.Model.DatabaseModels;
 using NurseRecordingSystem.Model.DTO;
 
@@ -7,9 +7,9 @@ namespace NurseRecordingSystem.Controllers
 {
     public class AuthController : Controller
     {
-        private readonly UserAuthentication _userAuth;
+        private readonly UserAuthenticationService _userAuth;
 
-        public AuthController(UserAuthentication userAuth)
+        public AuthController(UserAuthenticationService userAuth)
         {
             _userAuth = userAuth 
                 ?? throw new ArgumentNullException(nameof(userAuth), "UserAuthentication cannot be null");
