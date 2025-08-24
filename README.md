@@ -1,3 +1,12 @@
+# Overview
+The Patient Tracker System backend is a C# ASP.NET Core Web API designed to assist 
+communication between students and clinic nurses. It manages patient form submissions, 
+notifications, medicine inventory, and clinic status updates with real-time synchronization 
+across mobile and web clients.
+
+This system ensures that students can quickly report health issues while nurses receive timely notifications, 
+manage patient records, and keep the clinic’s operational status and inventory updated.
+
 # NurseRecordingSystem
 A Project from ACLC College of Mandaue
 Software Engineering I
