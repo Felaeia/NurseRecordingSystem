@@ -58,7 +58,7 @@ namespace NurseRecordingSystem.Class.Authentication
         }
 
         //Create User Function 
-        public void CreateUser(UserModel user)
+        public void CreateUser(CreateUserRequest user)
         {
             if (user == null)
                 {
@@ -69,12 +69,12 @@ namespace NurseRecordingSystem.Class.Authentication
                 new SqlCommand("INSERT INTO [Users] (authId, firstName, middleName, lastName, contactNumber, address) " +
                 "VALUES (@authId, @firstName, @middleName, @lastName, @contactNumber, @address)", connection))
             {
-                cmdUser.Parameters.AddWithValue("@firstName", user.firstName);
-                cmdUser.Parameters.AddWithValue("@middleName", user.middleName);
-                cmdUser.Parameters.AddWithValue("@lastName", user.lastName);
-                cmdUser.Parameters.AddWithValue("@contactNumber", user.contactNumber);
-                cmdUser.Parameters.AddWithValue("@address", user.address);
-                cmdUser.Parameters.AddWithValue("@authId", user.authId);
+                cmdUser.Parameters.AddWithValue("@firstName", user.FirstName);
+                cmdUser.Parameters.AddWithValue("@middleName", user.MiddleName);
+                cmdUser.Parameters.AddWithValue("@lastName", user.LastName);
+                cmdUser.Parameters.AddWithValue("@contactNumber", user.ContactNumber);
+                cmdUser.Parameters.AddWithValue("@address", user.Address);
+                cmdUser.Parameters.AddWithValue("@authId", user.AuthId);
                 try
                 {
                     connection.Open();

@@ -36,7 +36,7 @@ namespace NurseRecordingSystem.Controllers
         /// Create user profile linked to an authentication record.
         /// </summary>
         [HttpPost("create-user")]
-        public IActionResult CreateUser([FromBody] UserModel user)
+        public IActionResult CreateUser([FromBody] CreateUserRequest user)
         {
             try
             {
