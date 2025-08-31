@@ -1,4 +1,4 @@
-﻿namespace NurseRecordingSystem.Class.Admin
+﻿namespace NurseRecordingSystem.Class.Services.AdminServices
 
 //AdminAccessService
 //This service should be dedicated to handling the security and authentication aspects of an admin's role.
