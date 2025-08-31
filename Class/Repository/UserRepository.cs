@@ -18,7 +18,7 @@ namespace NurseRecordingSystem.Class.Repository
         public async Task<UserAuth> GetUserByUsernameAsync(string username)
         {
             using (var connection = new SqlConnection(_connectionString))
-            using (var cmd = new SqlCommand("SELECT authId, userName, passwordHash, passwordSalt FROM [Auth] WHERE username = @username", connection))
+            using (var cmd = new SqlCommand("SELECT authId, userName, passwordHash, passwordSalt,email FROM [Auth] WHERE username = @username", connection))
             {
                 cmd.Parameters.AddWithValue("@username", username);
                 try
@@ -33,7 +33,8 @@ namespace NurseRecordingSystem.Class.Repository
                                 AuthId = (int)reader["authId"],
                                 UserName = reader["userName"].ToString()!,
                                 PasswordHash = (byte[])reader["passwordHash"],
-                                PasswordSalt = (byte[])reader["passwordSalt"]
+                                PasswordSalt = (byte[])reader["passwordSalt"],
+                                Email = reader["email"].ToString()!
                             };
                         }
                     }

@@ -12,6 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Contracts\ServiceContracts\Nurse\" />
+    <Folder Include="Contracts\ServiceContracts\User\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
