@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using NurseRecordingSystem.Class.Services.HelperServices;
+using NurseRecordingSystem.Contracts.RepositoryContracts.User;
 using NurseRecordingSystem.Contracts.ServiceContracts.Auth;
 using NurseRecordingSystem.Model.DatabaseModels;
 using NurseRecordingSystem.Model.DTO;
@@ -11,11 +13,15 @@ namespace NurseRecordingSystem.Class.Services.Authentication
     public class UserAuthenticationService : IUserAuthServices
     {
         private readonly string? _connectionString;
+        private readonly IUserRepository _userRepository;
 
-        public UserAuthenticationService(IConfiguration configuration)
+        //Dependency Injection of IConfiguration and IUserRepository
+        public UserAuthenticationService(IConfiguration configuration, IUserRepository userRepository)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            _userRepository = userRepository
+                ?? throw new ArgumentNullException(nameof(userRepository),"UserAuth Service cannot be null");
         }
 
         //Login Function
@@ -63,14 +69,30 @@ namespace NurseRecordingSystem.Class.Services.Authentication
                 throw new UnauthorizedAccessException("Invalid username or password.");
             }
         }
-
+            
         public async Task<LoginResponse> AuthenticateAsync(LoginRequest request)
         {
-            return await Login(request); // Temporary implementation
-            //var user = await 
-            //if (request == null){
-            //    throw new ArgumentException(nameof(request),"LoginRequest Cannot be Null");
-            //}
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request), "ERROR: LoginRequest cannot be null");
+            }
+
+            //Cal UserRepository
+            var user = await _userRepository.GetUserByUsernameAsync(request.UserName);
+            if (user == null || !PasswordHelper.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            {
+                throw new UnauthorizedAccessException("Invalid username or password");
+            }
+
+
+            return new LoginResponse
+            {
+                AuthId = user.AuthId,
+                UserName = user.UserName,
+                Email = user.Email,
+                Role = 1
+                // Token = ...
+            };
 
         }
     }
