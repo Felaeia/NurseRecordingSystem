@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using NurseRecordingSystem.Contracts.ServiceContracts.Auth;
 using NurseRecordingSystem.Model.DatabaseModels;
 using NurseRecordingSystem.Model.DTO;
+using System;
 
-namespace NurseRecordingSystem.Class.Authentication
+namespace NurseRecordingSystem.Class.Services.Authentication
 {
-    public class UserAuthenticationService
+    public class UserAuthenticationService : IUserAuthServices
     {
         private readonly string? _connectionString;
 
@@ -16,11 +18,8 @@ namespace NurseRecordingSystem.Class.Authentication
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         }
 
-        // Replace the return statement inside the Login method to return a string (e.g., a JWT token).
-        // If you want to return the LoginResponse object, change the method signature to return LoginResponse instead of string.
-        // Here is the fix assuming you want to return LoginResponse:
-
-        public LoginResponse Login(LoginRequest request)
+        //Login Function
+        public async Task<LoginResponse> Login(LoginRequest request)
         {
             if (request == null)
             {
@@ -34,7 +33,7 @@ namespace NurseRecordingSystem.Class.Authentication
 
                 try
                 {
-                    connection.Open();
+                    await connection.OpenAsync();
                     using (var reader = cmdLoginUser.ExecuteReader())
                     {
                         if (reader.Read())
@@ -65,18 +64,14 @@ namespace NurseRecordingSystem.Class.Authentication
             }
         }
 
+        public async Task<LoginResponse> AuthenticateAsync(LoginRequest request)
+        {
+            return await Login(request); // Temporary implementation
+            //var user = await 
+            //if (request == null){
+            //    throw new ArgumentException(nameof(request),"LoginRequest Cannot be Null");
+            //}
 
-
-        //TODO: Forgot Password Function
-        //DO THIS SHIT AFTER YOU MAKE EMAIL WORK
-
-        //TODO: Veryfy Password from Hash
-        //public bool 
-
-        // TODO: Implement JWT generation
-        //private string GenerateJwtToken(string username, int role)
-        
-        //    return "fake-jwt-token";
-        //}
+        }
     }
 }

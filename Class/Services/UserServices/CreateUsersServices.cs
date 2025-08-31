@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using NurseRecordingSystem.Model.DTO;
 
-namespace NurseRecordingSystem.Class.UserServices
+namespace NurseRecordingSystem.Class.Services.UserServices
 {
     public class CreateUsersServices
     {

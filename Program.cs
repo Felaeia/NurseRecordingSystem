@@ -1,4 +1,4 @@
-using NurseRecordingSystem.Class.Authentication;
+using NurseRecordingSystem.Class.Services.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 

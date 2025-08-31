@@ -1,4 +1,4 @@
-﻿namespace NurseRecordingSystem.Class.Admin
+﻿namespace NurseRecordingSystem.Class.Services.AdminServices
 
 //This service should contain functions that allow an administrator to manage the core data and users of the system.
 //Think of this as the primary CRUD(Create, Read, Update, Delete) service for administrative tasks.

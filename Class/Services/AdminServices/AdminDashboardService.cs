@@ -1,4 +1,4 @@
-﻿namespace NurseRecordingSystem.Class.Admin
+﻿namespace NurseRecordingSystem.Class.Services.AdminServices
 
 //AdminDashboardService
 //This service should be focused on retrieving data specifically for the administrative dashboard view.
