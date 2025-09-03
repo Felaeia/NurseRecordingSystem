@@ -24,7 +24,7 @@ namespace NurseRecordingSystem.Class.Services.Authentication
                 ?? throw new ArgumentNullException(nameof(userRepository),"UserAuth Service cannot be null");
         }
 
-        //Login Function
+        //User Method: Login
         public async Task<LoginResponse> Login(LoginRequest request)
         {
             if (request == null)
@@ -42,6 +42,7 @@ namespace NurseRecordingSystem.Class.Services.Authentication
                     await connection.OpenAsync();
                     using (var reader = cmdLoginUser.ExecuteReader())
                     {
+                        //Note: During Login Method should pass the plain text password and compare with the hashed password in 
                         if (reader.Read())
                         {
                             string? storedPassword = reader["password"].ToString();
@@ -69,7 +70,9 @@ namespace NurseRecordingSystem.Class.Services.Authentication
                 throw new UnauthorizedAccessException("Invalid username or password.");
             }
         }
-            
+
+        //User Method: Authenticate 
+        //Note: Method should also send a Session Token for further authentication
         public async Task<LoginResponse> AuthenticateAsync(LoginRequest request)
         {
             if (request == null)
