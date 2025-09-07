@@ -1,6 +1,6 @@
-﻿namespace NurseRecordingSystem.Model.DTO
+﻿namespace NurseRecordingSystem.Model.DTO.AuthDTOs
 {
-    public class UserAuth
+    public class UserAuthDTO
     {
         public int AuthId { get; init; }
         public string? UserName { get; init; } = null!;

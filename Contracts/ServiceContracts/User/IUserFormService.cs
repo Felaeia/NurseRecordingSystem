@@ -1,9 +1,9 @@
-﻿using NurseRecordingSystem.Model.DTO;
+﻿using NurseRecordingSystem.Model.DTO.UserDTOs;
 
 namespace NurseRecordingSystem.Contracts.ServiceContracts.User
 {
     public interface IUserFormService
     {
-        Task<UserFormResponse> CreateUserForm(UserFormRequest userForm, string userId, string creator);
+        Task<UserFormResponseDTO> CreateUserForm(UserFormRequestDTO userForm, string userId, string creator);
     }
 }

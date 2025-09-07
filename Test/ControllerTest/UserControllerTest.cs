@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NurseRecordingSystem.Contracts.ServiceContracts.User;
-using NurseRecordingSystem.Model.DTO;
+using NurseRecordingSystem.Model.DTO.AuthDTOs;
+using NurseRecordingSystem.Model.DTO.UserDTOs;
 using PresentationProject.Controllers;
 using Xunit;
 
@@ -11,7 +11,7 @@ namespace NurseRecordingSystemTest.ControllerTest
     public class UserControllerTest
     {
         private readonly Mock<ICreateUsersService> _mockCreateUserService;
-        private readonly UserController _userController;
+        private readonly UserController _userController; 
 
         public UserControllerTest()
         {
@@ -33,13 +33,13 @@ namespace NurseRecordingSystemTest.ControllerTest
                 ContactNumber = "1234567890",
                 Address = "123 Test St"
             };
-            var request = new CreateAuthenticationRequest
+            var request = new CreateAuthenticationRequestDTO
             {
-                UserName = userAuth.UserName,
+                UserName = userAuth.Email,
                 Password = userAuth.Password,
                 Email = userAuth.Email
             };
-            var user = new CreateUserRequest
+            var user = new CreateUserRequestDTO
             {
                 FirstName = userAuth.FirstName,
                 MiddleName = userAuth.MiddleName,
@@ -58,6 +58,22 @@ namespace NurseRecordingSystemTest.ControllerTest
             // Assert
             Assert.NotNull(result);
             Assert.Equal(200, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task CreateAuthentication_NullRequest_ReturnsBadRequest()
+        {
+            var userAuth = new CreateUserWithAuthenticationDTO
+            {
+                UserName = "testuser",
+                Password = "Test@123",
+            };
+
+            // Act
+            var result = await _userController.CreateAuthentication(userAuth) as BadRequestObjectResult;
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(400, result.StatusCode);
         }
     }
 }

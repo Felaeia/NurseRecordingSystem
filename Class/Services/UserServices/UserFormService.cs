@@ -2,7 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Identity.Client;
 using NurseRecordingSystem.Contracts.ServiceContracts.User;
-using NurseRecordingSystem.Model.DTO;
+using NurseRecordingSystem.Model.DTO.UserDTOs;
 
 namespace NurseRecordingSystem.Class.Services.UserServices
 {
@@ -15,7 +15,7 @@ namespace NurseRecordingSystem.Class.Services.UserServices
             _connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         }
-        public async Task<UserFormResponse> CreateUserForm(UserFormRequest userFormRequest, string userId, string creator)
+        public async Task<UserFormResponseDTO> CreateUserForm(UserFormRequestDTO userFormRequest, string userId, string creator)
         {
             if (userFormRequest == null)
             {
@@ -37,7 +37,7 @@ namespace NurseRecordingSystem.Class.Services.UserServices
                     throw new Exception("Error in Create User Form", ex);
                 }
 
-                return new UserFormResponse
+                return new UserFormResponseDTO
                 {
 
                 };

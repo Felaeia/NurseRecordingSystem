@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using NurseRecordingSystem.Class.Services.UserServices;
+﻿using Microsoft.AspNetCore.Mvc;
+using NurseRecordingSystem.Contracts.ControllerContracts;
+using NurseRecordingSystem.Contracts.ServiceContracts.Auth;
 using NurseRecordingSystem.Contracts.ServiceContracts.User;
-using NurseRecordingSystem.Model.DTO;
+using NurseRecordingSystem.Model.DTO.AuthDTOs;
+using NurseRecordingSystem.Model.DTO.UserDTOs;
 
 namespace PresentationProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : ControllerBase , IUserController
     {
         private readonly ICreateUsersService _createUsersService;
 
@@ -27,14 +28,14 @@ namespace PresentationProject.Controllers
         {
             try
             {
-                var authRequest = new CreateAuthenticationRequest
+                var authRequest = new CreateAuthenticationRequestDTO
                 {
                     UserName = request.UserName,
                     Password = request.Password,
                     Email = request.Email
                 };
 
-                var userRequest = new CreateUserRequest
+                var userRequest = new CreateUserRequestDTO
                 {
                     FirstName = request.FirstName,
                     MiddleName = request.MiddleName,
@@ -52,25 +53,5 @@ namespace PresentationProject.Controllers
             }
         }
         #endregion
-
-        #region Post ??? In Development LoL
-        /// <summary>
-        /// Create user profile linked to an authentication record.
-        /// </summary>
-        [HttpPost("create")]
-        public IActionResult CreateUser([FromBody] CreateUserRequest user)
-        {
-            try
-            {
-                //_userAuth.CreateUser(user);
-                return Ok(new { Message = "User created successfully." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Error = ex.Message });
-            }
-        }
-        #endregion
-
     }
 }

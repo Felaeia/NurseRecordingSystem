@@ -1,4 +1,4 @@
-﻿using NurseRecordingSystem.Model.DTO;
+﻿using NurseRecordingSystem.Model.DTO.HelperDTOs;
 
 namespace NurseRecordingSystem.Class.Services.Authentication
 {
@@ -13,7 +13,7 @@ namespace NurseRecordingSystem.Class.Services.Authentication
         }
 
         //Nurse Method: Login
-        public async Task<LoginResponse> NurseLogin()
+        public async Task<LoginResponseDTO> NurseLogin()
         {
             // Implementation for Nurse Login
             throw new NotImplementedException();

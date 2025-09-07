@@ -1,4 +1,4 @@
-﻿using NurseRecordingSystem.Model.DTO;
+﻿using NurseRecordingSystem.Model.DTO.AuthDTOs;
 
 namespace NurseRecordingSystem.Contracts.RepositoryContracts.User
 {
@@ -6,6 +6,6 @@ namespace NurseRecordingSystem.Contracts.RepositoryContracts.User
     {
         //This method finds a user by their username
         //Returns user object if found, otherwise null
-        Task<UserAuth> GetUserByUsernameAsync(string username);
+        Task<UserAuthDTO> GetUserByUsernameAsync(string username);
     }
 }

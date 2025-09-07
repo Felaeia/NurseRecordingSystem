@@ -1,6 +1,6 @@
-﻿namespace NurseRecordingSystem.Model.DTO
+﻿namespace NurseRecordingSystem.Model.DTO.UserDTOs
 {
-    public class UserFormRequest
+    public class UserFormRequestDTO
     {
         public int formId { get; set; }
         public string issueType { get; set; } = null!;

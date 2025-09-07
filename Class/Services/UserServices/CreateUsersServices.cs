@@ -1,7 +1,8 @@
 ﻿using Microsoft.Data.SqlClient;
 using NurseRecordingSystem.Class.Services.HelperServices;
 using NurseRecordingSystem.Contracts.ServiceContracts.User;
-using NurseRecordingSystem.Model.DTO;
+using NurseRecordingSystem.Model.DTO.AuthDTOs;
+using NurseRecordingSystem.Model.DTO.UserDTOs;
 
 namespace NurseRecordingSystem.Class.Services.UserServices
 {
@@ -18,7 +19,7 @@ namespace NurseRecordingSystem.Class.Services.UserServices
         }
 
         //Create Auth for User Function (role = user)
-        public async Task<int> CreateUserAuthenticateAsync(CreateAuthenticationRequest authRequest, CreateUserRequest user)
+        public async Task<int> CreateUserAuthenticateAsync(CreateAuthenticationRequestDTO authRequest, CreateUserRequestDTO user)
         {
             if (authRequest == null)
             {
@@ -97,7 +98,7 @@ namespace NurseRecordingSystem.Class.Services.UserServices
 
         //User Login 
         //CHORE: Updated Insert SqlCommand to accept updatedOn, updatedBy, isActive(bit) :,(
-        public async Task CreateUser(CreateUserRequest user)
+        public async Task CreateUser(CreateUserRequestDTO user)
         {
             if (user == null)
             {

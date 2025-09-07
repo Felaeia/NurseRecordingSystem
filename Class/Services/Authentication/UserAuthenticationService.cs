@@ -5,15 +5,17 @@ using NurseRecordingSystem.Class.Services.HelperServices;
 using NurseRecordingSystem.Contracts.RepositoryContracts.User;
 using NurseRecordingSystem.Contracts.ServiceContracts.Auth;
 using NurseRecordingSystem.Model.DatabaseModels;
-using NurseRecordingSystem.Model.DTO;
+using NurseRecordingSystem.Model.DTO.HelperDTOs;
 using System;
 
 namespace NurseRecordingSystem.Class.Services.Authentication
 {
-    public class UserAuthenticationService : IUserAuthServices
+    public class UserAuthenticationService : IUserAuthenticationService
     {
         private readonly string? _connectionString;
         private readonly IUserRepository _userRepository;
+        private readonly PasswordHelper _passwordHelper;
+
 
         //Dependency Injection of IConfiguration and IUserRepository
         public UserAuthenticationService(IConfiguration configuration, IUserRepository userRepository)
@@ -22,10 +24,13 @@ namespace NurseRecordingSystem.Class.Services.Authentication
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository),"UserAuth Service cannot be null");
+            //Chore: Change this into a Interface for better testing and flexibility
+            _passwordHelper = new PasswordHelper();
         }
 
         //User Method: Login
-        public async Task<LoginResponse> AuthenticateAsync(LoginRequest request)
+        #region Login
+        public async Task<LoginResponseDTO> AuthenticateAsync(LoginRequestDTO request)
         {
             if (request == null)
             {
@@ -33,29 +38,26 @@ namespace NurseRecordingSystem.Class.Services.Authentication
             }
 
             using (var connection = new SqlConnection(_connectionString))
-            using (var cmdLoginUser = new SqlCommand("SELECT authId, userName, password, email, role FROM Auth WHERE userName = @userName", connection))
+            using (var cmdLoginUser = new SqlCommand("SELECT authId, userName, passwordHash,passwordSalt, email, role FROM Auth WHERE email = @email", connection))
             {
-                cmdLoginUser.Parameters.AddWithValue("@userName", request.UserName);
-
+                cmdLoginUser.Parameters.AddWithValue("@email", request.Email);
                 try
                 {
+
                     await connection.OpenAsync();
                     using (var reader = cmdLoginUser.ExecuteReader())
                     {
-                        //Note: During Login Method should pass the plain text password and compare with the hashed password in 
                         if (reader.Read())
                         {
-                            string? storedPassword = reader["password"].ToString();
 
-                            if (storedPassword == request.Password) // TODO: use hashing here
+                            if (_passwordHelper.VerifyPasswordHash(request.Password, (byte[])reader["passwordHash"], (byte[])reader["passwordSalt"]) == true && request.Email == (reader["email"].ToString())) // TODO: use hashing here
                             {
-                                return new LoginResponse
+                                return new LoginResponseDTO
                                 {
-                                    AuthId = (int)reader["authId"],
+                                    AuthId = int.Parse(reader["authId"].ToString()!),
                                     UserName = reader["userName"].ToString()!,
                                     Email = reader["email"].ToString()!,
-                                    Role = (int)reader["role"]
-                                    // Token = ...
+                                    Role = int.Parse(reader["role"].ToString()!)
                                 };
                             }
                         }
@@ -67,12 +69,14 @@ namespace NurseRecordingSystem.Class.Services.Authentication
                     throw new Exception("Database ERROR occured during login", ex);
                 }
 
-                throw new UnauthorizedAccessException("Invalid username or password.");
+                throw new UnauthorizedAccessException("Invalid Email or Password.");
             }
         }
+        #endregion
+
 
         //User Function: To Determine the role of the user
-        public async Task<int> DetermineRoleAync(LoginResponse response)
+        public async Task<int> DetermineRoleAync(LoginResponseDTO response)
         {
             if (response == null)
             {

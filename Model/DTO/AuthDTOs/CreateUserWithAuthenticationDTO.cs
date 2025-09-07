@@ -1,4 +1,4 @@
-﻿namespace NurseRecordingSystem.Model.DTO
+﻿namespace NurseRecordingSystem.Model.DTO.AuthDTOs
 {
     public class CreateUserWithAuthenticationDTO
     {

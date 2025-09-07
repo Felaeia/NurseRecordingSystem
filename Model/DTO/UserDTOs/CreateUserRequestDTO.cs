@@ -1,6 +1,6 @@
-﻿namespace NurseRecordingSystem.Model.DTO
+﻿namespace NurseRecordingSystem.Model.DTO.UserDTOs
 {
-    public class CreateUserRequest
+    public class CreateUserRequestDTO
     {
         public string FirstName { get; set; } = null!;
         public string? MiddleName { get; set; }

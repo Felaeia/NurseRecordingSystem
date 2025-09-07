@@ -1,7 +1,8 @@
 ﻿using Microsoft.Data.SqlClient;
 using NurseRecordingSystem.Contracts.RepositoryContracts.User;
-using NurseRecordingSystem.Model.DTO;
+using NurseRecordingSystem.Model.DTO.AuthDTOs;
 
+//UNUSED FOLDER/FILE MAY BE DELETED LATER
 namespace NurseRecordingSystem.Class.Repository
 {
     public class UserRepository : IUserRepository
@@ -15,7 +16,7 @@ namespace NurseRecordingSystem.Class.Repository
         }
 
         //This method finds a user by their username
-        public async Task<UserAuth> GetUserByUsernameAsync(string username)
+        public async Task<UserAuthDTO> GetUserByUsernameAsync(string username)
         {
             using (var connection = new SqlConnection(_connectionString))
             using (var cmd = new SqlCommand("SELECT authId, userName, passwordHash, passwordSalt,email FROM [Auth] WHERE username = @username", connection))
@@ -28,7 +29,7 @@ namespace NurseRecordingSystem.Class.Repository
                     {
                         if (await reader.ReadAsync())
                         {
-                            return new UserAuth
+                            return new UserAuthDTO
                             {
                                 AuthId = (int)reader["authId"],
                                 UserName = reader["userName"].ToString()!,
