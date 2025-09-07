@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NurseRecordingSystem.Class.Services.UserServices;
+using NurseRecordingSystem.Contracts.ServiceContracts.User;
 using NurseRecordingSystem.Model.DTO;
 
 namespace PresentationProject.Controllers
@@ -9,23 +10,24 @@ namespace PresentationProject.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly CreateUsersServices _userAuth;
+        private readonly ICreateUsersService _userAuth;
 
-        public UserController(CreateUsersServices userAuth)
+        public UserController(ICreateUsersService userAuth)
         {
             _userAuth = userAuth
                 ?? throw new ArgumentNullException(nameof(userAuth), "UserAuthentication cannot be null");
         }
 
+        #region Post User Authentication
         /// <summary>
         /// Create authentication (login credentials) for a new user.
         /// </summary>
         [HttpPost("create-auth")]
-        public IActionResult CreateAuthentication([FromBody] CreateAuthenticationRequest request)
+        public async Task<IActionResult> CreateAuthentication([FromBody] CreateAuthenticationRequest request)
         {
             try
             {
-                var authId = _userAuth.CreateAuthentication(request);
+                var authId = await _userAuth.CreateAuthenticationAsync(request);
                 return Ok(new { AuthId = authId, Message = "Authentication created successfully." });
             }
             catch (Exception ex)
@@ -33,7 +35,9 @@ namespace PresentationProject.Controllers
                 return BadRequest(new { Error = ex.Message });
             }
         }
+        #endregion
 
+        #region Post User
         /// <summary>
         /// Create user profile linked to an authentication record.
         /// </summary>
@@ -50,5 +54,7 @@ namespace PresentationProject.Controllers
                 return BadRequest(new { Error = ex.Message });
             }
         }
+        #endregion
+
     }
 }

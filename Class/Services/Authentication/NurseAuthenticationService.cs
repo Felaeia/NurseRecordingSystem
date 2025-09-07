@@ -1,4 +1,6 @@
-﻿namespace NurseRecordingSystem.Class.Services.Authentication
+﻿using NurseRecordingSystem.Model.DTO;
+
+namespace NurseRecordingSystem.Class.Services.Authentication
 {
     public class NurseAuthenticationService
     {
@@ -10,19 +12,24 @@
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         }
 
-        //Nurse Function: Login
+        //Nurse Method: Login
+        public async Task<LoginResponse> NurseLogin()
+        {
+            // Implementation for Nurse Login
+            throw new NotImplementedException();
+        }
 
-        //Nurse Function: Forgot password
+        //Nurse Method: Forgot password
 
-        //Nurse Function: Reset password
+        //Nurse Method: Reset password
 
-        //Nurse Function: Change password
+        //Nurse Method: Change password
 
-        //Nurse Function: Send code to verification email
+        //Nurse Method: Send code to verification email
 
-        //Nurse Function: Vereify code from email
+        //Nurse Method: Vereify code from email
 
-        //Nurse Function: 
+        //Nurse Method: 
 
     }
 }
