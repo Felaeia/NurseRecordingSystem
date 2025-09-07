@@ -1,9 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
+using NurseRecordingSystem.Contracts.ServiceContracts.User;
 using NurseRecordingSystem.Model.DTO;
 
 namespace NurseRecordingSystem.Class.Services.UserServices
 {
-    public class CreateUsersServices
+    public class CreateUsersServices : ICreateUsersService
     {
         private readonly string? _connectionString;
 
@@ -14,7 +15,7 @@ namespace NurseRecordingSystem.Class.Services.UserServices
         }
 
         //Create Auth for User Function (role = user)
-        public int CreateAuthentication(CreateAuthenticationRequest authRequest)
+        public async Task<int> CreateAuthenticationAsync(CreateAuthenticationRequest authRequest)
         {
             if (authRequest == null)
             {
@@ -22,8 +23,8 @@ namespace NurseRecordingSystem.Class.Services.UserServices
             }
             //Integer(1) = User Access
             var role = 1;
-            using (var connection = new SqlConnection(_connectionString))
-            using (var cmdUserAuth =
+            await using (var connection = new SqlConnection(_connectionString))
+            await using(var cmdUserAuth =
                 new SqlCommand("INSERT INTO [Auth] (userName, password, email, role) " +
                 "VALUES (@userName, @password, @email, @role);" +
                 "SELECT CAST(SCOPE_IDENTITY() as int);", connection))
@@ -34,10 +35,8 @@ namespace NurseRecordingSystem.Class.Services.UserServices
                 cmdUserAuth.Parameters.AddWithValue("@role", role);
                 try
                 {
-                    connection.Open();
-
-                    // Fix: ExecuteScalar() returns object, which can be null. Cast after null check.
-                    var result = cmdUserAuth.ExecuteScalar();
+                    await connection.OpenAsync();
+                    var result = await cmdUserAuth.ExecuteScalarAsync();
                     if (result == null || result == DBNull.Value)
                     {
                         throw new Exception("Failed to retrieve the new authentication ID.");
@@ -49,21 +48,18 @@ namespace NurseRecordingSystem.Class.Services.UserServices
                 {
                     throw new ArgumentException("Database ERROR occured during creating AUTHENTICATION", ex);
                 }
-                //Redundant Close() call removed, as 'using' statement handles it automatically.
-                //connection.Close();
-
             }
         }
 
         //Create User Function 
-        public void CreateUser(CreateUserRequest user)
+        public async Task CreateUser(CreateUserRequest user)
         {
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user), "User cannot be null");
             }
-            using (var connection = new SqlConnection(_connectionString))
-            using (var cmdCreateUser =
+            await using(var connection = new SqlConnection(_connectionString))
+            await using(var cmdCreateUser =
                 new SqlCommand("INSERT INTO [Users] (authId, firstName, middleName, lastName, contactNumber, address) " +
                 "VALUES (@authId, @firstName, @middleName, @lastName, @contactNumber, @address)", connection))
             {
@@ -75,17 +71,14 @@ namespace NurseRecordingSystem.Class.Services.UserServices
                 cmdCreateUser.Parameters.AddWithValue("@authId", user.AuthId);
                 try
                 {
-                    connection.Open();
-                    cmdCreateUser.ExecuteNonQuery();
+                    await connection.OpenAsync();
+                    await cmdCreateUser.ExecuteNonQueryAsync();
                 }
                 catch (SqlException ex)
                 {
                     throw new Exception("Database ERROR occured during creating during USER", ex);
                 }
-                //Redundant Close() call removed, as 'using' statement handles it automatically.
-                //connection.Close();
             }
-
         }
     }
 }
