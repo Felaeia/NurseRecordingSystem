@@ -25,7 +25,7 @@ namespace NurseRecordingSystem.Class.Services.Authentication
         }
 
         //User Method: Login
-        public async Task<LoginResponse> Login(LoginRequest request)
+        public async Task<LoginResponse> AuthenticateAsync(LoginRequest request)
         {
             if (request == null)
             {
@@ -71,32 +71,26 @@ namespace NurseRecordingSystem.Class.Services.Authentication
             }
         }
 
-        //User Method: Authenticate 
-        //Note: Method should also send a Session Token for further authentication
-        public async Task<LoginResponse> AuthenticateAsync(LoginRequest request)
+        //User Function: To Determine the role of the user
+        public async Task<int> DetermineRoleAync(LoginResponse response)
         {
-            if (request == null)
+            if (response == null)
             {
-                throw new ArgumentNullException(nameof(request), "ERROR: LoginRequest cannot be null");
+                throw new ArgumentNullException(nameof(response), "LoginResponse cannot be Null");
             }
-
-            //Cal UserRepository
-            var user = await _userRepository.GetUserByUsernameAsync(request.UserName);
-            if (user == null || !PasswordHelper.VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            var user = await _userRepository.GetUserByUsernameAsync(response.UserName);
+            if (user == null)
             {
-                throw new UnauthorizedAccessException("Invalid username or password");
+                throw new UnauthorizedAccessException("User not found.");
             }
+            return user.Role;
+        }
 
-
-            return new LoginResponse
-            {
-                AuthId = user.AuthId,
-                UserName = user.UserName,
-                Email = user.Email,
-                Role = 1
-                // Token = ...
-            };
-
+        //User Method: Logout (fishballs need session tokens)
+        public async Task LogoutAsync()
+        {
+            // Implement logout logic if needed (e.g., invalidate tokens, clear session data)
+            await Task.CompletedTask;
         }
     }
 }
