@@ -10,24 +10,40 @@ namespace PresentationProject.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly ICreateUsersService _userAuth;
+        private readonly ICreateUsersService _createUsersService;
 
-        public UserController(ICreateUsersService userAuth)
+        public UserController(ICreateUsersService createUsersService)
         {
-            _userAuth = userAuth
-                ?? throw new ArgumentNullException(nameof(userAuth), "UserAuthentication cannot be null");
+            _createUsersService = createUsersService
+                ?? throw new ArgumentNullException(nameof(createUsersService), "UserAuthentication cannot be null");
         }
 
-        #region Post User Authentication
+        #region Post User
         /// <summary>
         /// Create authentication (login credentials) for a new user.
         /// </summary>
-        [HttpPost("create-auth")]
-        public async Task<IActionResult> CreateAuthentication([FromBody] CreateAuthenticationRequest request)
+        [HttpPost("create-user")]
+        public async Task<IActionResult> CreateAuthentication([FromBody] CreateUserWithAuthenticationDTO request)
         {
             try
             {
-                var authId = await _userAuth.CreateAuthenticationAsync(request);
+                var authRequest = new CreateAuthenticationRequest
+                {
+                    UserName = request.UserName,
+                    Password = request.Password,
+                    Email = request.Email
+                };
+
+                var userRequest = new CreateUserRequest
+                {
+                    FirstName = request.FirstName,
+                    MiddleName = request.MiddleName,
+                    LastName = request.LastName,
+                    Address = request.Address,
+                    ContactNumber = request.ContactNumber
+                };
+                var authId = await _createUsersService.CreateUserAuthenticateAsync(authRequest, userRequest);
+                //await _createUsersService.CreateUser(userRequest);
                 return Ok(new { AuthId = authId, Message = "Authentication created successfully." });
             }
             catch (Exception ex)
@@ -37,16 +53,16 @@ namespace PresentationProject.Controllers
         }
         #endregion
 
-        #region Post User
+        #region Post ??? In Development LoL
         /// <summary>
         /// Create user profile linked to an authentication record.
         /// </summary>
-        [HttpPost("create-user")]
+        [HttpPost("create")]
         public IActionResult CreateUser([FromBody] CreateUserRequest user)
         {
             try
             {
-                _userAuth.CreateUser(user);
+                //_userAuth.CreateUser(user);
                 return Ok(new { Message = "User created successfully." });
             }
             catch (Exception ex)
