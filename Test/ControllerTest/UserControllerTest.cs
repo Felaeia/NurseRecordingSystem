@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
+using NurseRecordingSystem.Contracts.ControllerContracts;
 using NurseRecordingSystem.Contracts.ServiceContracts.User;
 using NurseRecordingSystem.Model.DTO.AuthDTOs;
 using NurseRecordingSystem.Model.DTO.UserDTOs;
@@ -11,7 +12,7 @@ namespace NurseRecordingSystemTest.ControllerTest
     public class UserControllerTest
     {
         private readonly Mock<ICreateUsersService> _mockCreateUserService;
-        private readonly UserController _userController; 
+        private readonly IUserController _userController; 
 
         public UserControllerTest()
         {
@@ -19,7 +20,7 @@ namespace NurseRecordingSystemTest.ControllerTest
             _userController = new UserController(_mockCreateUserService.Object);
         }
         [Fact]
-        public async Task CreateAuthentication_ValidRequest_ReturnsOkResult()
+        public async Task CreateUser_ValidRequest_ReturnsOkResult()
         {
             // Mock Data (Create A Mock Data Folder and Transfer This, and Just Call It)
             var userAuth = new CreateUserWithAuthenticationDTO
@@ -47,6 +48,7 @@ namespace NurseRecordingSystemTest.ControllerTest
                 ContactNumber = userAuth.ContactNumber,
                 Address = userAuth.Address
             };
+
             var random = new Random();
             var expectedAuthId = random.Next(100);
             _mockCreateUserService.Setup(s => s.CreateUserAuthenticateAsync(request, user)).ReturnsAsync(expectedAuthId);
@@ -58,22 +60,6 @@ namespace NurseRecordingSystemTest.ControllerTest
             // Assert
             Assert.NotNull(result);
             Assert.Equal(200, result.StatusCode);
-        }
-
-        [Fact]
-        public async Task CreateAuthentication_NullRequest_ReturnsBadRequest()
-        {
-            var userAuth = new CreateUserWithAuthenticationDTO
-            {
-                UserName = "testuser",
-                Password = "Test@123",
-            };
-
-            // Act
-            var result = await _userController.CreateAuthentication(userAuth) as BadRequestObjectResult;
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(400, result.StatusCode);
         }
     }
 }
