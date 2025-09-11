@@ -1,11 +1,9 @@
-﻿using NurseRecordingSystem.Contracts.HelperContracts;
-
-namespace NurseRecordingSystem.Class.Services.HelperServices
+﻿namespace NurseRecordingSystem.Class.Services.HelperServices
 {
-    public class PasswordHelper : IPasswordHelper
+    public class PasswordHelper 
     {
         //Create password hash function
-        public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
             {
@@ -15,7 +13,7 @@ namespace NurseRecordingSystem.Class.Services.HelperServices
         }
 
         //Verify password hash function
-        public bool VerifyPasswordHash(string password, byte[] storedPasswordHash, byte[] storedPasswordSalt)
+        public static bool VerifyPasswordHash(string password, byte[] storedPasswordHash, byte[] storedPasswordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512(storedPasswordSalt))
             {

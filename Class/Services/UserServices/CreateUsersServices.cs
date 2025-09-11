@@ -15,7 +15,6 @@ namespace NurseRecordingSystem.Class.Services.UserServices
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            _passwordHelper = new PasswordHelper();
         }
 
         //Create Auth for User Function (role = user)
@@ -31,7 +30,7 @@ namespace NurseRecordingSystem.Class.Services.UserServices
             //CHORE: Create A DisplayName in Database and DTO for DisplayNames
             var role = 1;
             byte[] passwordSalt, PasswordHash;
-            _passwordHelper.CreatePasswordHash(authRequest.Password, out PasswordHash, out passwordSalt);
+            PasswordHelper.CreatePasswordHash(authRequest.Password, out PasswordHash, out passwordSalt);
             int newAuthId;
 
             await using (var connection = new SqlConnection(_connectionString))
