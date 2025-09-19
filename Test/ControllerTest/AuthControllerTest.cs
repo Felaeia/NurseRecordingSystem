@@ -1,61 +1,88 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NurseRecordingSystem.Class.Services.Authentication;
-using NurseRecordingSystem.Class.Services.HelperServices;
-using NurseRecordingSystem.Contracts.ControllerContracts;
-using NurseRecordingSystem.Contracts.RepositoryContracts.User;
 using NurseRecordingSystem.Contracts.ServiceContracts.Auth;
 using NurseRecordingSystem.Controllers;
 using NurseRecordingSystem.Model.DTO.HelperDTOs;
 using Xunit;
 
-namespace NurseRecordingSystem.Test.ControllerTest
+namespace NurseRecordingSystemTest.ControllerTest
 {
     public class AuthControllerTest
     {
-        private readonly Mock<IUserAuthenticationService> _mockAuthenticationService;
-        private readonly IAuthController _authController;
+        private readonly Mock<IUserAuthenticationService> _mockAuthService;
+        private readonly AuthController _authController;
 
         public AuthControllerTest()
         {
-            _mockAuthenticationService = new Mock<IUserAuthenticationService>();
-            _authController = new AuthController(_mockAuthenticationService.Object);
+            _mockAuthService = new Mock<IUserAuthenticationService>();
+            _authController = new AuthController(_mockAuthService.Object);
         }
-
+        //successful login test
         [Fact]
-        public async Task AuthenticateAsync_ValidCredentials_ReturnsLoginResponseDTO()
+        public async Task LoginUser_ValidCredentials_ReturnsOkResult()
         {
-            // Arrange
-            var mockConfiguration = new Mock<IConfiguration>();
-            var mockUserRepository = new Mock<IUserRepository>();
-            var mockPasswordHelper = new Mock<PasswordHelper>(); // You can mock the helper directly, but an interface is better.
-
-            // Set up mock data
-            var testUser = new User
-            {
-                // Populate with required properties
-            };
+            
             var loginRequest = new LoginRequestDTO
             {
-                // Populate with test credentials
+                Email = "testuser@gmail.com",
+                Password = "Test@123"
             };
+            var expectedResponse = new LoginResponseDTO { };
 
-            // Setup mock behavior
-            mockUserRepository.Setup(repo => repo.GetUserByUsernameAsync(It.IsAny<string>()))
-                              .ReturnsAsync(testUser);
-            mockPasswordHelper.Setup(helper => helper.VerifyPasswordHash(It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<byte[]>()))
-                              .Returns(true);
+            _mockAuthService.Setup(s => s.AuthenticateAsync(It.IsAny<LoginRequestDTO>())).ReturnsAsync(expectedResponse);
 
-            var service = new UserAuthenticationService(mockConfiguration.Object, mockUserRepository.Object);
 
-            // Act
-            var result = await service.AuthenticateAsync(loginRequest);
+            var result = await _authController.LoginUser(loginRequest) as OkObjectResult;
 
-            // Assert
+
             Assert.NotNull(result);
-            Assert.True(result.IsAuthenticated);
-            Assert.Equal(testUser.Email, result.Email);
-            // Add more asserts to check other properties
+            Assert.Equal(200, result.StatusCode);
+            Assert.NotNull(result.Value);
+            Assert.Contains("Login Succesful", result.Value?.ToString());
+        }
+        //invalid credentials test
+        [Fact]
+        public async Task LoginUser_InvalidCredentials_ReturnsUnauthorized()
+        {
+
+            var loginRequest = new LoginRequestDTO
+            {
+                Email = "wronguser@gmail.com",
+                Password = "WrongPassword"
+            };
+            _mockAuthService.Setup(iuserauthservice => iuserauthservice.AuthenticateAsync(It.IsAny<LoginRequestDTO>())).ReturnsAsync((LoginResponseDTO?)null);
+
+
+
+            var result = await _authController.LoginUser(loginRequest) as UnauthorizedObjectResult;
+
+
+            Assert.NotNull(result);
+            Assert.Equal(401, result.StatusCode);
+            Assert.Equal("Invalid credentials.", result.Value);
+        }
+
+        //server error test
+        [Fact]
+        public async Task LoginUser_ExceptionThrown_ReturnsServerError()
+        {
+
+            var loginRequest = new LoginRequestDTO
+            {
+                Email = "errormail@gmail.com",
+                Password = "3123123"
+            };
+            _mockAuthService.Setup(s => s.AuthenticateAsync(It.IsAny<LoginRequestDTO>())).ThrowsAsync(new Exception("Testing exception"));
+
+
+            var result = await _authController.LoginUser(loginRequest) as ObjectResult;
+
+
+            Assert.NotNull(result);
+            Assert.Equal(500, result.StatusCode);
+            Assert.NotNull(result.Value);
+            Assert.Contains("Error in Login", result.Value?.ToString());
         }
     }
 }

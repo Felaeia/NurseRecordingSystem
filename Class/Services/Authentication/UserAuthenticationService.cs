@@ -50,7 +50,7 @@ namespace NurseRecordingSystem.Class.Services.Authentication
                         if (reader.Read())
                         {
 
-                            if (_passwordHelper.VerifyPasswordHash(request.Password, (byte[])reader["passwordHash"], (byte[])reader["passwordSalt"]) == true && request.Email == (reader["email"].ToString())) // TODO: use hashing here
+                            if (PasswordHelper.VerifyPasswordHash(request.Password, (byte[])reader["passwordHash"], (byte[])reader["passwordSalt"]) == true && request.Email == (reader["email"].ToString())) // TODO: use hashing here
                             {
                                 return new LoginResponseDTO
                                 {

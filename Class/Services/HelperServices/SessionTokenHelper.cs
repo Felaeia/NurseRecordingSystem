@@ -11,8 +11,8 @@ namespace NurseRecordingSystem.Class.Services.HelperServices
 
         public sessionTokenHelper(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnectionString")
-                ?? throw new InvalidOperationException("Connection string 'Default Connecection' not Found");
+            _connectionString = configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("Connection string 'Default Connection' not Found");
 
         }
 
